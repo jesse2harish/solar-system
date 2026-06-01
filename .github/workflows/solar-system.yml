@@ -39,15 +39,19 @@ jobs:
         
         - name: Debug step
           if: always()
-          run: pwd && ls -la && find . -maxdepth 4 -type f -name "*.xml"
+          run: |
+            echo "PWD=$(pwd)"
+            echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+            ls -la
+            find "$GITHUB_WORKSPACE" -maxdepth 5 -type f -name "test-results.xml"
 
         - name: Archive unit test results
           if: always()
-          uses: actions/upload-artifact@v5
+          uses: actions/upload-artifact@v4
           with:
             name: mocha-test-result-${{ matrix.nodejs_version }}
-            path: test-result.xml
-            if-no-files-found: warn
+            path: ${{ github.workspace }}/**/test-results.xml
+            if-no-files-found: error
     
     code-coverage:
         name: Code Coverage
