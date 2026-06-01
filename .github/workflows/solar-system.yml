@@ -37,11 +37,17 @@ jobs:
         - name: Unit Testing
           run: npm test
         
+        - name: Debug step
+          if: always()
+          run: pwd && ls -la && find . -maxdepth 4 -type f -name "*.xml"
+
         - name: Archive unit test results
+          if: always()
           uses: actions/upload-artifact@v5
           with:
-            name: Mocha-Test-Result
+            name: mocha-test-result-${{ matrix.nodejs_version }}
             path: test-result.xml
+            if-no-files-found: warn
     
     code-coverage:
         name: Code Coverage
